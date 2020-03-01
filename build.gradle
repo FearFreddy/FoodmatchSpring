@@ -1,0 +1,50 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+
+}
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'de.hdm'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation group: 'org.json', name: 'json', version: '20180813'
+	testImplementation 'io.projectreactor:reactor-test'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+task createPom  {
+	pom {
+		project {
+			groupId 'de.hdm'
+			artifactId 'sg-web-initial'
+			version '0.0.1-SNAPSHOT'
+
+			inceptionYear '2008'
+			licenses {
+				license {
+					name 'The Apache Software License, Version 2.0'
+					url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					distribution 'repo'
+				}
+			}
+		}
+	}.writeTo("pom.xml")
+}
