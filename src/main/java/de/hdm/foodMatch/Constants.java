@@ -11,7 +11,10 @@ public class Constants {
             "   \"male\": true,\n" +
             "   \"favoriteRecipe\":[696667,538169],\n" +
             "   \"savedIngredients\":[1125,2045,1016],\n" +
-            "   \"neededIngredients\":[11353,2045,11291]\n" +
+            "   \"neededIngredients\":[11353,2045,11291],\n" +
+            "   \"availableSavedIngredients\":[],\n" +
+            "   \"neededSavedIngredients\":[],\n" +
+            "   \"favoriteSavedRecipes\":[]\n" +
             "}";
 
     static final String recipesJSON = "{\n" +

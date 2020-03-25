@@ -3,6 +3,7 @@ package de.hdm.foodMatch.controller;
 
 import de.hdm.foodMatch.data.model.Ingredient;
 import de.hdm.foodMatch.data.model.Recipe;
+import de.hdm.foodMatch.data.model.SavedIngredient;
 import de.hdm.foodMatch.data.model.User;
 import de.hdm.foodMatch.repository.IngredientRepository;
 import de.hdm.foodMatch.repository.RecipeRepository;
@@ -13,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "https://foodmatch-app.herokuapp.com")
+@CrossOrigin(origins = "http://localhost:4200")
 class UserController {
 
     private final static String TAG = "ShoppingListController: ";
@@ -67,6 +68,28 @@ class UserController {
         return null;
     }
 
+    @GetMapping("/user/removeSavedIngredient")
+    User removeSavedIngredient(@RequestParam long userId, @RequestParam boolean isShoppingList, @RequestParam long ingredientId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            SavedIngredient[] ingredients = Arrays.stream(isShoppingList
+                    ? user.getNeededSavedIngredients()
+                    : user.getAvailableSavedIngredients())
+                    .filter(ingr -> ingredientId != ingr.getId())
+                    .toArray(SavedIngredient[]::new);
+            if (isShoppingList) {
+                user.setNeededSavedIngredients(ingredients);
+            } else {
+                user.setAvailableSavedIngredients(ingredients);
+            }
+            userRepository.save(user);
+            return user;
+        }
+        return null;
+    }
+
     @GetMapping("/user/removeRecipe")
     User removeRecipe(@RequestParam long userId, @RequestParam long recipeId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -98,6 +121,17 @@ class UserController {
         return null;
     }
 
+    @GetMapping("/user/savedIngredients")
+    SavedIngredient[] getSavedIngredients(@RequestParam long userId, @RequestParam boolean isShoppingList) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return isShoppingList ? user.getNeededSavedIngredients()
+                            : user.getAvailableSavedIngredients();
+        }
+        return null;
+    }
+
     @GetMapping("/user/addIngredient")
     User addIngredient(@RequestParam long userId, @RequestParam boolean isShoppingList, @RequestParam long ingredientId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -124,12 +158,32 @@ class UserController {
         return null;
     }
 
+    @PostMapping("/user/addSavedIngredient")
+    void addSavedIngredient(@RequestParam long userId, @RequestParam boolean isShoppingList, @RequestBody SavedIngredient ingredient) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            List<SavedIngredient> ingredients = Arrays.stream(isShoppingList
+                    ? user.getNeededSavedIngredients()
+                    : user.getAvailableSavedIngredients())
+                    .collect(Collectors.toList());
+            if (ingredients.stream().noneMatch(ingr -> ingr.getId() == ingredient.getId())) {
+                ingredients.add(ingredient);
+                if (isShoppingList) {
+                    user.setNeededSavedIngredients(ingredients.stream().toArray(SavedIngredient[]::new));
+                } else {
+                    user.setAvailableSavedIngredients(ingredients.stream().toArray(SavedIngredient[]::new));
+                }
+            }
+            userRepository.save(user);
+        }
+    }
     @GetMapping("/user/addRecipe")
     void addRecipe(@RequestParam long userId, @RequestParam long recipeId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
 
-        if (optionalUser.isPresent() && optionalRecipe.isPresent()) {
+        if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             List<Long> longs = Arrays.stream(user.getFavoriteRecipe())
                     .boxed()

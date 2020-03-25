@@ -17,6 +17,10 @@ public class User {
     private long[] savedIngredients;
     private long[] neededIngredients;
 
+    private SavedRecipe[] favoriteSavedRecipes;
+    private SavedIngredient[] availableSavedIngredients;
+    private SavedIngredient[] neededSavedIngredients;
+
     @JsonProperty("firstname")
     public String getFirstname() {
         return firstname;
@@ -87,6 +91,36 @@ public class User {
     public void setNeededIngredients(long[] value) {
         this.neededIngredients = value;
     }
+
+    @JsonProperty("favoriteSavedRecipes")
+    public SavedRecipe[] getFavoriteSavedRecipes() {
+        return favoriteSavedRecipes;
+    }
+
+    @JsonProperty("favoriteSavedRecipes")
+    public void setFavoriteSavedRecipes(SavedRecipe[] value) {
+        this.favoriteSavedRecipes = value;
+    }
+
+    @JsonProperty("availableSavedIngredients")
+    public SavedIngredient[] getAvailableSavedIngredients() {
+        return availableSavedIngredients;
+    }
+
+    @JsonProperty("availableSavedIngredients")
+    public void setAvailableSavedIngredients(SavedIngredient[] value) {
+        this.availableSavedIngredients = value;
+    }
+
+    @JsonProperty("neededSavedIngredients")
+    public SavedIngredient[] getNeededSavedIngredients() {
+        return neededSavedIngredients;
+    }
+    @JsonProperty("neededSavedIngredients")
+    public void setNeededSavedIngredients(SavedIngredient[] value) {
+        this.neededSavedIngredients = value;
+    }
+
 
     public static User fromJsonString(String json) throws IOException {
         return getObjectReader().readValue(json);
