@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://foodmatch-app.herokuapp.com")
 class IngredientController {
 
     private final static String TAG = "RecipeController: ";
