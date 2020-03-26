@@ -24,21 +24,6 @@ public class FoodMatchApplication {
     @Bean
     CommandLineRunner init(UserRepository userRepository, RecipeRepository recipeRepository, IngredientRepository ingredientRepository) {
         return args -> {
-            //INIT FROM JSON
-            final Recipe.RecipeArray recipeArray = Recipe.RecipeArray.fromJsonString(recipesJSON);
-            recipeRepository.deleteAll();
-            if (recipeArray != null) {
-                for (Recipe recipe : recipeArray.getRecipes()) {
-                    recipeRepository.save(recipe);
-                    for (Ingredient ingredient : recipe.getIngredients()) {
-                        ingredientRepository.save(ingredient);
-                    }
-                }
-            }
-            userRepository.deleteAll();
-            userRepository.save(User.fromJsonString(userJSON));
-            userRepository.findAll().forEach(System.out::println);
-            recipeRepository.findAll().forEach(System.out::println);
         };
     }
 
